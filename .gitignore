@@ -21,9 +21,9 @@ run/
 *.pkl
 *.pickle
 *.bt
-
+*.png
 .eggs/
-
-*.pyc
+*.h5
 
 Generative-Adversarial-Networks-Projects/
+/recipes/3d_gan/3DShapeNets/

@@ -1,10 +1,6 @@
 numpy
-torch
-gym
-gym[atari]
-gym[box2d]
-tqdm
-torchvision
-scikit-learn
-pygame
-opencv-python
+scipy
+matplotlib
+tensorflow
+keras
+tensorboard

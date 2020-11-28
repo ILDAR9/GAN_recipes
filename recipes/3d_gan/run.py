@@ -29,8 +29,8 @@ Load datasets
 
 
 def get3DImages(data_dir):
-    # all_files = np.random.choice(glob.glob(data_dir), size=10)
-    all_files = glob.glob(data_dir)
+    all_files = np.random.choice(glob.glob(data_dir), size=64)
+    # all_files = glob.glob(data_dir)
     all_volumes = np.asarray([getVoxelsFromMat(f) for f in all_files], dtype=np.bool)
     return all_volumes
 
@@ -55,12 +55,12 @@ if __name__ == '__main__':
     """
     Specify Hyperparameters
     """
-    object_name = "chair"
+    object_name = "car"
     data_dir = f"3DShapeNets/volumetric_data/{object_name}/30/train/*.mat"
     gen_learning_rate = 0.0025
     dis_learning_rate = 10e-5
     beta = 0.5
-    batch_size = 1
+    batch_size = 32
     z_size = 200
     epochs = 100
     MODE = "train"

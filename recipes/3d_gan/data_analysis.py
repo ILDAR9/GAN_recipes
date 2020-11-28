@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 data_fld = "3DShapeNets/volumetric_data"
 # load .mat file
-voxels = io.loadmat(os.path.join(data_fld, "car/30/train/car_000000010_2.mat"))['instance']
+voxels = io.loadmat(os.path.join(data_fld, "car/30/train/car_000000010_3.mat"))['instance']
 # print(sorted(voxels.keys()))
 print(voxels.shape)
 # 30 -> 32

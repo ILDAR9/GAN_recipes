@@ -15,7 +15,7 @@ dist/
 /build/
 tmp/
 run/
-/env/
+**/env/
 /notebooks/
 
 *.pkl
@@ -27,3 +27,4 @@ run/
 
 Generative-Adversarial-Networks-Projects/
 /recipes/3d_gan/3DShapeNets/
+/recipes/aging_face/wiki_crop/

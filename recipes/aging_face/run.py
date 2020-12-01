@@ -42,13 +42,14 @@ if __name__ == '__main__':
     # Define hyperparameters
     wiki_dir = "wiki_crop"
     epochs = 500
-    batch_size = 48
+    batch_size = 84
     image_shape = (64, 64, 3)
     z_shape = 100
     TRAIN_GAN = True
     TRAIN_ENCODER = False
     TRAIN_GAN_WITH_FR = False
     fr_image_shape = (192, 192, 3)
+    N = 45
 
     # Define optimizers
     dis_optimizer = Adam(lr=0.0002, beta_1=0.5, beta_2=0.999, epsilon=10e-8)
@@ -101,12 +102,19 @@ if __name__ == '__main__':
     Train the generator and the discriminator network
     """
     if TRAIN_GAN:
-        for epoch in tqdm(range(epochs), total=epochs):
+
+        # Load the generator network's weights
+        if N > 0:
+            generator.load_weights(f"generator_{N}.h5")
+            discriminator.load_weights(f"discriminator_{N}.h5")
+            print(f"Weights are loaded for epoch {N}")
+
+        for epoch in tqdm(range(N+1, epochs), initial=N+1, total=epochs):
             print("Epoch:{}".format(epoch))
             loaded_images = tf.data.Dataset.from_generator(data_gen, output_types=tf.float32, ). \
                 batch(batch_size, drop_remainder=True). \
                 map(lambda x: x / 127.5 - 1.0). \
-                prefetch(buffer_size=batch_size*10)
+                prefetch(buffer_size=batch_size * 10)
 
             gen_losses = []
             dis_losses = []
@@ -119,7 +127,7 @@ if __name__ == '__main__':
                 if y_batch.shape[0] < batch_size:
                     print(f"pass Batch:{index + 1}")
                     continue
-                print(f"Batch:{index + 1}")
+                # print(f"Batch:{index + 1}")
 
                 # images_batch = loaded_images[index * batch_size:(index + 1) * batch_size]
                 # images_batch = images_batch / 127.5 - 1.0
@@ -138,7 +146,6 @@ if __name__ == '__main__':
                 d_loss_fake = discriminator.train_on_batch([initial_recon_images, y_batch], fake_labels)
 
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
-                print("d_loss:{}".format(d_loss))
 
                 """
                 Train the generator network
@@ -149,7 +156,8 @@ if __name__ == '__main__':
                 random_labels = to_categorical(random_labels, 6)
 
                 g_loss = adversarial_model.train_on_batch([z_noise2, random_labels], np.array([1] * batch_size).reshape((-1, 1)))
-                print("g_loss:{}".format(g_loss))
+                if index % 5 == 0:
+                    print(f"d_loss:{d_loss}, g_loss:{g_loss}")
 
                 gen_losses.append(g_loss)
                 dis_losses.append(d_loss)
@@ -162,6 +170,7 @@ if __name__ == '__main__':
             Generate images after every n-th epoch
             """
             if epoch % 1 == 0:
+                print(f"Gen results for epocj {epoch}")
                 y_batch = y[0:batch_size]
                 z_noise = np.random.normal(0, 1, size=(batch_size, z_shape))
 
